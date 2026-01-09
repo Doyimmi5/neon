@@ -1,0 +1,187 @@
+<%- include('includes/head') %>
+
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <%- include('includes/header') %>
+  <%- include('includes/sidebar') %>
+
+  <div class="content-wrapper">
+    <section class="content-header">
+      <h1>
+        💎 Premium
+        <small>Gerenciamento Premium</small>
+      </h1>
+    </section>
+
+    <section class="content">
+      <div class="row">
+        
+        <!-- Premium Status -->
+        <div class="col-md-6">
+          <div class="box box-<%= hasPremium ? 'success' : 'warning' %>">
+            <div class="box-header with-border">
+              <h3 class="box-title">Status Premium</h3>
+            </div>
+            <div class="box-body">
+              <% if (hasPremium && premiumInfo) { %>
+                <div class="alert alert-success">
+                  <h4><i class="icon fa fa-check"></i> Premium Ativo!</h4>
+                  <p><strong>Expira em:</strong> <%= Math.ceil((new Date(premiumInfo.expiresAt) - new Date()) / (1000 * 60 * 60 * 24)) %> dias</p>
+                  <p><strong>Ativado em:</strong> <%= new Date(premiumInfo.redeemedAt).toLocaleDateString('pt-BR') %></p>
+                </div>
+              <% } else { %>
+                <div class="alert alert-warning">
+                  <h4><i class="icon fa fa-warning"></i> Premium Inativo</h4>
+                  <p>Você não possui premium ativo. Use um código para ativar!</p>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Redeem Code -->
+        <div class="col-md-6">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Resgatar Código</h3>
+            </div>
+            <div class="box-body">
+              <form id="redeemForm">
+                <div class="form-group">
+                  <label for="code">Código Premium</label>
+                  <input type="text" class="form-control" id="code" placeholder="Digite seu código premium" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Resgatar</button>
+              </form>
+              <div id="redeemResult" class="mt-3"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <% if (isOwner) { %>
+      <div class="row">
+        
+        <!-- Generate Codes (Owner Only) -->
+        <div class="col-md-8">
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Gerar Códigos (Owner)</h3>
+            </div>
+            <div class="box-body">
+              <form id="generateForm">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="days">Dias</label>
+                      <input type="number" class="form-control" id="days" value="30" min="1" max="365">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="amount">Quantidade</label>
+                      <input type="number" class="form-control" id="amount" value="1" min="1" max="50">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="customCode">Código Personalizado (Opcional)</label>
+                      <input type="text" class="form-control" id="customCode" placeholder="Deixe vazio para gerar automaticamente">
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-info">Gerar Códigos</button>
+              </form>
+              <div id="generateResult" class="mt-3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Premium Stats (Owner Only) -->
+        <div class="col-md-4">
+          <div class="box box-success">
+            <div class="box-header with-border">
+              <h3 class="box-title">Estatísticas Premium</h3>
+            </div>
+            <div class="box-body">
+              <div class="info-box">
+                <span class="info-box-icon bg-green"><i class="fa fa-users"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Usuários Premium</span>
+                  <span class="info-box-number"><%= stats.activePremium %></span>
+                </div>
+              </div>
+              <div class="info-box">
+                <span class="info-box-icon bg-blue"><i class="fa fa-code"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Total de Códigos</span>
+                  <span class="info-box-number"><%= stats.totalCodes %></span>
+                </div>
+              </div>
+              <div class="info-box">
+                <span class="info-box-icon bg-yellow"><i class="fa fa-clock-o"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Códigos Disponíveis</span>
+                  <span class="info-box-number"><%= stats.availableCodes %></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <% } %>
+
+    </section>
+  </div>
+
+  <%- include('includes/footer') %>
+
+</div>
+
+<script>
+// Redeem Code
+$('#redeemForm').on('submit', function(e) {
+  e.preventDefault();
+  const code = $('#code').val();
+  
+  $.post('/premium/redeem', { code }, function(data) {
+    const resultDiv = $('#redeemResult');
+    if (data.success) {
+      resultDiv.html('<div class="alert alert-success">' + data.message + '</div>');
+      setTimeout(() => location.reload(), 2000);
+    } else {
+      resultDiv.html('<div class="alert alert-danger">' + data.message + '</div>');
+    }
+  });
+});
+
+<% if (isOwner) { %>
+// Generate Codes
+$('#generateForm').on('submit', function(e) {
+  e.preventDefault();
+  const days = $('#days').val();
+  const amount = $('#amount').val();
+  const customCode = $('#customCode').val();
+  
+  $.post('/premium/generate', { days, amount, customCode }, function(data) {
+    const resultDiv = $('#generateResult');
+    if (data.success) {
+      let html = '<div class="alert alert-success"><h4>Códigos Gerados (' + data.days + ' dias cada):</h4>';
+      data.codes.forEach(code => {
+        html += '<code>' + code + '</code><br>';
+      });
+      html += '</div>';
+      resultDiv.html(html);
+    } else {
+      resultDiv.html('<div class="alert alert-danger">' + data.message + '</div>');
+    }
+  });
+});
+<% } %>
+</script>
+
+</body>
+</html>

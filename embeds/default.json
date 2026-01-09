@@ -1,0 +1,50 @@
+{
+  "welcome": {
+    "title": "🎉 Bem-vindo ao Servidor!",
+    "description": "Olá {user}, seja bem-vindo ao **{server}**!\n\nLeia as regras em <#123456789> e divirta-se!",
+    "color": "#00ff00",
+    "thumbnail": "{user.avatar}",
+    "image": "https://example.com/welcome.png",
+    "footer": {
+      "text": "Membro #{memberCount}",
+      "icon": "{server.icon}"
+    },
+    "fields": [
+      {
+        "name": "📋 Regras",
+        "value": "Leia as regras no canal apropriado",
+        "inline": true
+      },
+      {
+        "name": "🎮 Diversão",
+        "value": "Aproveite os canais de jogos!",
+        "inline": true
+      }
+    ]
+  },
+  "rules": {
+    "title": "📋 Regras do Servidor",
+    "description": "**Regras que devem ser seguidas por todos:**",
+    "color": "#ff0000",
+    "fields": [
+      {
+        "name": "1️⃣ Respeito",
+        "value": "Trate todos com respeito",
+        "inline": false
+      },
+      {
+        "name": "2️⃣ Spam",
+        "value": "Não faça spam nos canais",
+        "inline": false
+      },
+      {
+        "name": "3️⃣ Conteúdo",
+        "value": "Mantenha o conteúdo apropriado",
+        "inline": false
+      }
+    ],
+    "footer": {
+      "text": "Administração do Servidor"
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "event": {
+    "title": "🎉 {eventName}",
+    "description": "{eventDescription}",
+    "color": "#00ff00",
+    "thumbnail": "{eventImage}",
+    "fields": [
+      {
+        "name": "📅 Data",
+        "value": "{eventDate}",
+        "inline": true
+      },
+      {
+        "name": "⏰ Horário",
+        "value": "{eventTime}",
+        "inline": true
+      },
+      {
+        "name": "📍 Local",
+        "value": "{eventLocation}",
+        "inline": true
+      },
+      {
+        "name": "👥 Organizador",
+        "value": "{organizer}",
+        "inline": true
+      }
+    ],
+    "footer": {
+      "text": "Reaja com 🎉 para participar!"
+    },
+    "timestamp": true
+  },
+  "announcement": {
+    "title": "📢 Anúncio Importante",
+    "description": "{announcement}",
+    "color": "#0099ff",
+    "fields": [
+      {
+        "name": "👤 Anunciado por",
+        "value": "{announcer}",
+        "inline": true
+      }
+    ],
+    "footer": {
+      "text": "Administração do Servidor"
+    },
+    "timestamp": true
+  },
+  "maintenance": {
+    "title": "🔧 Manutenção Programada",
+    "description": "O bot entrará em manutenção em breve.\n\n**Duração estimada:** {duration}\n**Motivo:** {reason}",
+    "color": "#ff9900",
+    "fields": [
+      {
+        "name": "⏰ Início",
+        "value": "{startTime}",
+        "inline": true
+      },
+      {
+        "name": "🔚 Fim Previsto",
+        "value": "{endTime}",
+        "inline": true
+      }
+    ],
+    "footer": {
+      "text": "Equipe de Desenvolvimento"
+    },
+    "timestamp": true
+  }
+}

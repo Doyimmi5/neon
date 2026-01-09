@@ -1,0 +1,215 @@
+<%- include('includes/head') %>
+
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <%- include('includes/header') %>
+  <%- include('includes/sidebar') %>
+
+  <div class="content-wrapper">
+    <section class="content-header">
+      <h1>
+        📊 Estatísticas
+        <small>Dashboard de Estatísticas</small>
+      </h1>
+    </section>
+
+    <section class="content">
+      
+      <!-- Stats Overview -->
+      <div class="row">
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h3><%= stats.totalGuilds %></h3>
+              <p>Servidores</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-green">
+            <div class="inner">
+              <h3><%= stats.totalUsers.toLocaleString() %></h3>
+              <p>Usuários</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-person-add"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-yellow">
+            <div class="inner">
+              <h3><%= stats.totalChannels %></h3>
+              <p>Canais</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-chatbubbles"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-red">
+            <div class="inner">
+              <h3><%= stats.totalPremiumUsers %></h3>
+              <p>Premium</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-star"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        
+        <!-- Real-time Stats -->
+        <div class="col-md-8">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Estatísticas em Tempo Real</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" id="refreshStats">
+                  <i class="fa fa-refresh"></i>
+                </button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="info-box">
+                    <span class="info-box-icon bg-blue"><i class="fa fa-server"></i></span>
+                    <div class="info-box-content">
+                      <span class="info-box-text">Uptime</span>
+                      <span class="info-box-number" id="uptime">Carregando...</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="info-box">
+                    <span class="info-box-icon bg-purple"><i class="fa fa-memory"></i></span>
+                    <div class="info-box-content">
+                      <span class="info-box-text">Memória</span>
+                      <span class="info-box-number" id="memory">Carregando...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="progress-group">
+                <span class="progress-text">Servidores com Bot</span>
+                <span class="float-right"><b><%= stats.userGuilds %></b>/<%= stats.totalGuilds %></span>
+                <div class="progress progress-sm">
+                  <div class="progress-bar bg-primary" style="width: <%= (stats.userGuilds / stats.totalGuilds * 100).toFixed(1) %>%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Your Servers -->
+        <div class="col-md-4">
+          <div class="box box-success">
+            <div class="box-header with-border">
+              <h3 class="box-title">Seus Servidores</h3>
+            </div>
+            <div class="box-body">
+              <% if (userGuilds.length > 0) { %>
+                <% userGuilds.forEach(guild => { %>
+                  <div class="media">
+                    <div class="media-left">
+                      <img src="<%= guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png` : '/dist/img/default-50x50.gif' %>" 
+                           alt="<%= guild.name %>" class="media-object" style="width: 40px; height: 40px; border-radius: 50%;">
+                    </div>
+                    <div class="media-body">
+                      <h5 class="media-heading"><%= guild.name %></h5>
+                      <small class="text-muted">ID: <%= guild.id %></small>
+                    </div>
+                  </div>
+                  <hr>
+                <% }); %>
+              <% } else { %>
+                <p class="text-muted">Nenhum servidor encontrado.</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Atividade Recente</h3>
+            </div>
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table no-margin">
+                  <thead>
+                    <tr>
+                      <th>Ação</th>
+                      <th>Servidor</th>
+                      <th>Tempo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% recentActivity.forEach(activity => { %>
+                      <tr>
+                        <td><%= activity.action %></td>
+                        <td><%= activity.guild %></td>
+                        <td><span class="label label-success"><%= activity.time %></span></td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <%- include('includes/footer') %>
+
+</div>
+
+<script>
+function updateRealTimeStats() {
+  $.get('/stats/api', function(data) {
+    // Update uptime
+    const uptime = Math.floor(data.uptime);
+    const hours = Math.floor(uptime / 3600);
+    const minutes = Math.floor((uptime % 3600) / 60);
+    $('#uptime').text(hours + 'h ' + minutes + 'm');
+    
+    // Update memory usage
+    const memoryMB = Math.round(data.memoryUsage.used / 1024 / 1024);
+    $('#memory').text(memoryMB + ' MB');
+  });
+}
+
+// Update stats every 30 seconds
+setInterval(updateRealTimeStats, 30000);
+updateRealTimeStats(); // Initial load
+
+$('#refreshStats').click(function() {
+  updateRealTimeStats();
+  $(this).find('i').addClass('fa-spin');
+  setTimeout(() => {
+    $(this).find('i').removeClass('fa-spin');
+  }, 1000);
+});
+</script>
+
+</body>
+</html>

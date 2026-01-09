@@ -1,0 +1,70 @@
+{
+  "ban": {
+    "title": "🔨 Usuário Banido",
+    "description": "**{user}** foi banido do servidor.",
+    "color": "#ff0000",
+    "fields": [
+      {
+        "name": "👮 Moderador",
+        "value": "{moderator}",
+        "inline": true
+      },
+      {
+        "name": "📝 Motivo",
+        "value": "{reason}",
+        "inline": true
+      }
+    ],
+    "footer": {
+      "text": "Sistema de Moderação"
+    },
+    "timestamp": true
+  },
+  "kick": {
+    "title": "👢 Usuário Expulso",
+    "description": "**{user}** foi expulso do servidor.",
+    "color": "#ff9900",
+    "fields": [
+      {
+        "name": "👮 Moderador",
+        "value": "{moderator}",
+        "inline": true
+      },
+      {
+        "name": "📝 Motivo",
+        "value": "{reason}",
+        "inline": true
+      }
+    ],
+    "footer": {
+      "text": "Sistema de Moderação"
+    },
+    "timestamp": true
+  },
+  "warn": {
+    "title": "⚠️ Usuário Avisado",
+    "description": "**{user}** recebeu um aviso.",
+    "color": "#ffff00",
+    "fields": [
+      {
+        "name": "👮 Moderador",
+        "value": "{moderator}",
+        "inline": true
+      },
+      {
+        "name": "📝 Motivo",
+        "value": "{reason}",
+        "inline": true
+      },
+      {
+        "name": "📊 Total de Avisos",
+        "value": "{warnCount}",
+        "inline": true
+      }
+    ],
+    "footer": {
+      "text": "Sistema de Avisos"
+    },
+    "timestamp": true
+  }
+}

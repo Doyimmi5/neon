@@ -1,0 +1,299 @@
+<%- include('includes/head') %>
+
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <%- include('includes/header') %>
+  <%- include('includes/sidebar') %>
+
+  <div class="content-wrapper">
+    <section class="content-header">
+      <h1>
+        📋 Logs do Sistema
+        <small>Monitoramento e Logs</small>
+      </h1>
+    </section>
+
+    <section class="content">
+      
+      <!-- Log Stats -->
+      <div class="row">
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-blue">
+            <div class="inner">
+              <h3><%= logStats.total %></h3>
+              <p>Total de Logs</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-file-text"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-red">
+            <div class="inner">
+              <h3><%= logStats.errors %></h3>
+              <p>Erros</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-exclamation-triangle"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-yellow">
+            <div class="inner">
+              <h3><%= logStats.warnings %></h3>
+              <p>Avisos</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-warning"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 col-xs-6">
+          <div class="small-box bg-green">
+            <div class="inner">
+              <h3><%= logStats.info %></h3>
+              <p>Informações</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-info-circle"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Log Filters -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Filtros</h3>
+            </div>
+            <div class="box-body">
+              <form id="logFilters" class="form-inline">
+                <div class="form-group">
+                  <label for="levelFilter">Nível:</label>
+                  <select class="form-control" id="levelFilter">
+                    <option value="">Todos</option>
+                    <option value="ERROR">Erro</option>
+                    <option value="WARN">Aviso</option>
+                    <option value="INFO">Info</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="categoryFilter">Categoria:</label>
+                  <select class="form-control" id="categoryFilter">
+                    <option value="">Todas</option>
+                    <option value="SYSTEM">Sistema</option>
+                    <option value="COMMAND">Comando</option>
+                    <option value="API">API</option>
+                    <option value="GUILD">Servidor</option>
+                    <option value="PREMIUM">Premium</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="limitFilter">Limite:</label>
+                  <select class="form-control" id="limitFilter">
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                  </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <button type="button" class="btn btn-default" id="refreshLogs">
+                  <i class="fa fa-refresh"></i> Atualizar
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logs Table -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Logs Recentes</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                  <i class="fa fa-minus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table table-striped" id="logsTable">
+                  <thead>
+                    <tr>
+                      <th>Nível</th>
+                      <th>Categoria</th>
+                      <th>Mensagem</th>
+                      <th>Timestamp</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% logs.forEach(log => { %>
+                      <tr>
+                        <td>
+                          <span class="label label-<%= log.level === 'ERROR' ? 'danger' : log.level === 'WARN' ? 'warning' : 'info' %>">
+                            <%= log.level %>
+                          </span>
+                        </td>
+                        <td>
+                          <span class="badge bg-gray"><%= log.category %></span>
+                        </td>
+                        <td><%= log.message %></td>
+                        <td>
+                          <small class="text-muted">
+                            <%= new Date(log.timestamp).toLocaleString('pt-BR') %>
+                          </small>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-time Log Monitor -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box box-success">
+            <div class="box-header with-border">
+              <h3 class="box-title">Monitor em Tempo Real</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" id="toggleRealTime">
+                  <i class="fa fa-play"></i> Iniciar
+                </button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div id="realTimeLogs" style="height: 200px; overflow-y: auto; background: #f4f4f4; padding: 10px; font-family: monospace;">
+                <p class="text-muted">Monitor em tempo real desativado. Clique em "Iniciar" para ativar.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <%- include('includes/footer') %>
+
+</div>
+
+<script>
+let realTimeInterval;
+let realTimeActive = false;
+
+// Filter logs
+$('#logFilters').on('submit', function(e) {
+  e.preventDefault();
+  
+  const level = $('#levelFilter').val();
+  const category = $('#categoryFilter').val();
+  const limit = $('#limitFilter').val();
+  
+  const params = new URLSearchParams();
+  if (level) params.append('level', level);
+  if (category) params.append('category', category);
+  if (limit) params.append('limit', limit);
+  
+  $.get('/logs/api?' + params.toString(), function(data) {
+    updateLogsTable(data);
+  });
+});
+
+// Refresh logs
+$('#refreshLogs').click(function() {
+  $('#logFilters').submit();
+  $(this).find('i').addClass('fa-spin');
+  setTimeout(() => {
+    $(this).find('i').removeClass('fa-spin');
+  }, 1000);
+});
+
+// Toggle real-time monitoring
+$('#toggleRealTime').click(function() {
+  const button = $(this);
+  const icon = button.find('i');
+  
+  if (!realTimeActive) {
+    // Start real-time monitoring
+    realTimeActive = true;
+    icon.removeClass('fa-play').addClass('fa-stop');
+    button.html('<i class="fa fa-stop"></i> Parar');
+    
+    $('#realTimeLogs').html('<p class="text-success">Monitor em tempo real ativo...</p>');
+    
+    realTimeInterval = setInterval(() => {
+      $.get('/logs/api?limit=1', function(data) {
+        if (data.length > 0) {
+          const log = data[0];
+          const logHtml = `<div class="log-entry">
+            <span class="text-muted">[${new Date(log.timestamp).toLocaleTimeString()}]</span>
+            <span class="label label-${log.level === 'ERROR' ? 'danger' : log.level === 'WARN' ? 'warning' : 'info'}">${log.level}</span>
+            <span class="badge bg-gray">${log.category}</span>
+            ${log.message}
+          </div>`;
+          
+          $('#realTimeLogs').prepend(logHtml);
+          
+          // Keep only last 20 entries
+          const entries = $('#realTimeLogs .log-entry');
+          if (entries.length > 20) {
+            entries.slice(20).remove();
+          }
+        }
+      });
+    }, 2000);
+  } else {
+    // Stop real-time monitoring
+    realTimeActive = false;
+    icon.removeClass('fa-stop').addClass('fa-play');
+    button.html('<i class="fa fa-play"></i> Iniciar');
+    
+    clearInterval(realTimeInterval);
+    $('#realTimeLogs').html('<p class="text-muted">Monitor em tempo real desativado.</p>');
+  }
+});
+
+function updateLogsTable(logs) {
+  const tbody = $('#logsTable tbody');
+  tbody.empty();
+  
+  logs.forEach(log => {
+    const levelClass = log.level === 'ERROR' ? 'danger' : log.level === 'WARN' ? 'warning' : 'info';
+    const row = `<tr>
+      <td><span class="label label-${levelClass}">${log.level}</span></td>
+      <td><span class="badge bg-gray">${log.category}</span></td>
+      <td>${log.message}</td>
+      <td><small class="text-muted">${new Date(log.timestamp).toLocaleString('pt-BR')}</small></td>
+    </tr>`;
+    tbody.append(row);
+  });
+}
+
+// Auto-refresh every 30 seconds
+setInterval(() => {
+  if (!realTimeActive) {
+    $('#refreshLogs').click();
+  }
+}, 30000);
+</script>
+
+</body>
+</html>
