@@ -1,7 +1,0 @@
-DISPLAY_NAME=Discord Bot Moderation
-MEMORY=768
-VERSION=recommended
-LANGUAGE=node
-CUSTOM_COMMAND=node .
-SUBDOMAIN=atlasdash
-APPID=cd6c9678-b439-48b4-8fdb-89e5c4e96fe1
